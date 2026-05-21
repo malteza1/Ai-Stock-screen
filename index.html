@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI / Infra / Energy / Drone / BTC Screener</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #0f0f0f; color: #eee; }
+        h1, h2 { color: #00ccff; }
+        .category { margin: 25px 0; }
+        ul { list-style: none; padding: 0; }
+        li { margin: 10px 0; padding: 12px; background: #1e1e1e; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        li:hover { background: #00ccff; color: #000; transform: scale(1.03); }
+        #chart-container { height: 680px; margin-top: 20px; border: 1px solid #333; background: #111; border-radius: 8px; }
+        .info { font-size: 0.95em; color: #aaa; }
+    </style>
+</head>
+<body>
+    <h1>🚀 AI / Infra / Energy / Drone / BTC Proxy Screener</h1>
+    <p class="info">Click any ticker to load interactive TradingView chart • Add 200 SMA (Daily) + switch to Weekly for 100/200 WMA</p>
+
+    <div class="category">
+        <h2>Key ETFs</h2>
+        <ul id="etf-list"></ul>
+    </div>
+    <div class="category">
+        <h2>AI Stocks</h2>
+        <ul id="ai-list"></ul>
+    </div>
+    <div class="category">
+        <h2>AI Infrastructure & HPC</h2>
+        <ul id="infra-list"></ul>
+    </div>
+    <div class="category">
+        <h2>Energy / Nuclear for AI</h2>
+        <ul id="energy-list"></ul>
+    </div>
+    <div class="category">
+        <h2>Drone Stocks</h2>
+        <ul id="drone-list"></ul>
+    </div>
+    <div class="category">
+        <h2>BTC Proxy Stocks</h2>
+        <ul id="btc-list"></ul>
+    </div>
+
+    <h2 id="selected-symbol">Select a ticker above</h2>
+    <div id="chart-container"></div>
+
+    <script>
+        const stocks = {
+            etf: ['BATS:DRAM', 'NYSEARCA:SMRF', 'NYSEARCA:NLR', 'BATS:AIPO'],
+            ai: ['NASDAQ:NVDA', 'NASDAQ:AVGO', 'NASDAQ:MSFT', 'NASDAQ:GOOGL', 'NASDAQ:META', 'NASDAQ:AMZN', 'NASDAQ:MU', 'NASDAQ:AMD', 'NYSE:TSM', 'NASDAQ:PLTR'],
+            infra: ['NYSE:VRT', 'NASDAQ:ANET', 'NASDAQ:SMCI', 'NYSE:EQIX', 'NYSE:DLR', 'NASDAQ:DELL', 'NYSE:HPE', 'NASDAQ:MRVL'],
+            energy: ['NASDAQ:CEG', 'NYSE:VST', 'NYSE:OKLO', 'NYSE:CCJ', 'NYSE:BWXT', 'NYSE:ETN', 'NYSE:BE'],
+            drone: ['NASDAQ:AVAV', 'NASDAQ:KTOS', 'NASDAQ:ONDS', 'NYSE:TXT', 'NASDAQ:RKLB', 'NASDAQ:RCAT'],
+            btc: ['NASDAQ:MSTR', 'NASDAQ:MARA', 'NASDAQ:RIOT', 'NASDAQ:HUT', 'NASDAQ:CLSK', 'NASDAQ:COIN']
+        };
+
+        function populateList(id, tickers) {
+            const ul = document.getElementById(id);
+            tickers.forEach(ticker => {
+                const li = document.createElement('li');
+                li.textContent = ticker;
+                li.onclick = () => loadChart(ticker);
+                ul.appendChild(li);
+            });
+        }
+
+        populateList('etf-list', stocks.etf);
+        populateList('ai-list', stocks.ai);
+        populateList('infra-list', stocks.infra);
+        populateList('energy-list', stocks.energy);
+        populateList('drone-list', stocks.drone);
+        populateList('btc-list', stocks.btc);
+
+        function loadChart(symbol) {
+            document.getElementById('selected-symbol').textContent = `📊 Chart: ${symbol}`;
+
+            const container = document.getElementById('chart-container');
+            container.innerHTML = '';
+
+            const script = document.createElement('script');
+            script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+            script.async = true;
+            script.innerHTML = JSON.stringify({
+                "width": "100%", "height": "100%",
+                "symbol": symbol,
+                "interval": "D",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#1e1e1e",
+                "enable_publishing": false,
+                "hide_side_toolbar": false,
+                "allow_symbol_change": true,
+                "studies": ["MASimple@tv-basicstudies"],
+                "container_id": "tradingview_chart"
+            });
+            container.appendChild(script);
+        }
+    </script>
+</body>
+</html>
